@@ -1,66 +1,52 @@
 import React from "react";
-import { View, Button, Platform, Alert } from "react-native";
-import { launchCamera } from "react-native-image-picker";
-import { PermissionsAndroid } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
+import { Alert, Button, Image, StyleSheet } from "react-native";
 
-async function requestPermissions() {
-    if (Platform.OS === "android") {
-        // Request Camera and Storage permissions for Android
-        const cameraGranted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
+function Camera()
+{
+    const [image, setImage] = React.useState(null);
+
+    async function captureImage() {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if(status !== 'granted')
+        {
+            Alert.alert('Camera Permission Denied', 'Permission to access camera is required');
+            return;
+        }
+
+        let result = await ImagePicker.launchCameraAsync(
             {
-                title: "Camera Permission",
-                message: "This app needs access to your camera to take photos.",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "OK"
+                mediaTypes: ImagePicker.Image,
+                quality: 1,
+                allowsEditing: true,
+                aspect: [1, 1],
             }
         );
 
-        const storageGranted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-                title: "Storage Permission",
-                message: "This app needs access to your storage to save photos.",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "OK"
-            }
-        );
-
-        // Check if both permissions are granted
-        return (
-            cameraGranted === PermissionsAndroid.RESULTS.GRANTED &&
-            storageGranted === PermissionsAndroid.RESULTS.GRANTED
-        );
+        if(!result.canceled)
+        {
+            console.log(result);
+            setImage(result.assets[0].uri);
+        }
+        else {
+            Alert.prompt('Image not captured');
+        }
     }
-    return true; // Assume permissions are set in Info.plist for iOS
-}
-
-async function TakeNewPhoto() {
-    const hasPermission = await requestPermissions();
-
-    if (hasPermission) {
-        launchCamera({ mediaType: 'photo' }, (res) => {
-            if (res.didCancel) {
-                console.log("User cancelled camera");
-            } else if (res.errorCode) {
-                console.log("Camera Error: ", res.errorMessage);
-            } else {
-                console.log(res);
-            }
-        });
-    } else {
-        Alert.alert("Permissions denied", "You need to grant camera and storage permissions to use this feature.");
-    }
-}
-
-function Camera() {
     return (
-        <View>
-            <Button onPress={TakeNewPhoto} title="Take Photo" accessibilityLabel="Take a new photo" />
-        </View>
+        <>
+            <Button title="Capture Image" onPress={captureImage} />
+            {image && <Image source={{uri: image}} style={styles.image} />}
+        </>
     );
 }
+
+const styles = StyleSheet.create({
+    image: {
+        width: 200,
+        height: 200,
+        margin: 20,
+        borderRadius: 25,
+    }
+});
 
 export default Camera;
