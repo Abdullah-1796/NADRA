@@ -7,73 +7,78 @@ import * as FileSystem from 'expo-file-system';
 import { Buffer } from 'buffer';
 
 function Camera() {
-    const [imageURI, setImageURI] = React.useState(null);
+    const [imageURL, setImageURL] = React.useState(null);
+    //const [imageBase64, setImageBase64] = React.useState(null);
 
     //---------------------------------------------------------------
-    const apiKey = 'DDZtYMyekAeBJJxv5Xr4j95vgmDx0rdHAxnQMc70BDCtY405Gi5lJQQJ99AKACqBBLyXJ3w3AAAKACOGszoF';
-    const endpoint = 'https://abdullah-1796.cognitiveservices.azure.com/face/v1.0/detect';
+    const detectFace = async () => {
+        const apiKey = '8563cCZkrXVeku03Zcg4JDdxCn4CC_lN';
+        const apiSecret = 'hIqpwBC_JEbjs_cUupmJPkogTkfUco5d';
+        const url = 'https://api-us.faceplusplus.com/facepp/v3/detect';
 
-    async function detectFace(imageUri) {
         try {
-            // Read the image as a base64 string
-            const imageBinary = await FileSystem.readAsStringAsync(imageUri, {
-                encoding: FileSystem.EncodingType.Base64,
+            // Log Base64 Length
+            //console.log("Base64 Length:", imageBase64.length);
+
+            // Clean Base64 (remove prefix if present)
+            //const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+
+            // Check Length Again
+            //console.log("Clean Base64 Length:", cleanBase64.length);
+
+            // Prepare Form Data
+            const formData = new URLSearchParams();
+            formData.append('api_key', apiKey);
+            formData.append('api_secret', apiSecret);
+            formData.append('image_url', imageURL);
+            formData.append('return_attributes', 'gender,age');
+
+            // Send Request
+            const response = await axios.post(url, formData.toString(), {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             });
 
-            // Convert the base64 string to a binary buffer
-            const imageBuffer = Buffer.from(imageBinary, 'base64');
-
-            // Send the image to Azure Face API
-            const response = await axios.post(
-                endpoint,
-                imageBuffer,
-                {
-                    headers: {
-                        'Content-Type': 'application/octet-stream',
-                        'Ocp-Apim-Subscription-Key': apiKey, // Pass the correct API key
-                    },
-                    params: {
-                        returnFaceId: true,
-                        recognitionModel: 'recognition_04',
-                    },
-                }
-            );
-
-            if (response.data && response.data.length > 0) {
-                const faceId = response.data[0].faceId;
-                console.log('Face ID:', faceId);
-                return faceId;
-            } else {
-                console.error('No face detected:', response.data);
-                return null;
-            }
+            console.log('Face Detection Result:', response.data);
+            return response.data;
         } catch (error) {
-            console.error('Face detection error:', error);
+            if (error.response) {
+                console.error("Response Error:", error.response.data);
+            } else if (error.request) {
+                console.error("Request Error:", error.request);
+            } else {
+                console.error("General Error:", error.message);
+            }
+            throw error;
         }
-    }
+    };
+
+
 
     async function handleCapture() {
         try {
-            const uri = await captureImage();
-            setImageURI(uri);
-    
-            // Call detectFace after imageURI is updated
-            
+            const imageURL = await captureImage();
+            setImageURL(imageURL);
+            //setImageBase64(image.base64);
         } catch (error) {
             console.error('Error capturing image:', error);
         }
     }
 
-    async function handleDetection(){
-        const faceId = await detectFace(imageURI);
+    async function handleRecognition() {
+        if (!imageURL) {
+            console.error('Image URL is null');
+            return;
+        }
+
+        const faceId = await detectFace(imageURL);
         console.log('Face ID:', faceId);
     }
 
     return (
         <>
             <Button title="Capture Image" onPress={handleCapture} />
-            <Button title="Detect Face" onPress={handleDetection} />
-            {imageURI && <Image source={{ uri: imageURI }} style={styles.image} />}
+            <Button title="Recognize Face" onPress={handleRecognition} />
+            {imageURL && <Image source={{ uri: imageURL }} style={styles.image} />}
         </>
     );
 }
