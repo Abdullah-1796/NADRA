@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Image, StyleSheet, Text, View } from "react-native";
 import Input from "./components/Input";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Checkbox from "expo-checkbox";
@@ -48,12 +48,10 @@ function RegistrationScreen() {
         });
     }
 
-    async function handleCapture()
-    {
+    async function handleCapture() {
         const imageURL = await captureImage();
         const result = await detectFace(imageURL);
-        if(result !== 'Unable to detectFace')
-        {
+        if (result !== 'Unable to detectFace') {
             setImageCaptured(true);
             handleChange('url', imageURL);
             console.log(result);
@@ -61,13 +59,13 @@ function RegistrationScreen() {
     }
 
     function handleRegistration() {
-        axios.post(''+hostedURL+'/users', data)
-        .then(res => {
-            console.log(res.data);
-        })
-        .catch(err => {
-            console.error('Unable to register new user', err);
-        });
+        axios.post('' + hostedURL + '/users', data)
+            .then(res => {
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.error('Unable to register new user', err);
+            });
     }
 
 
@@ -88,6 +86,7 @@ function RegistrationScreen() {
             >
                 <View style={styles.container}>
                     <View style={styles.heading}>
+                        <Image source={'Nadra-Logo-background-drop.jpeg'} style={{width:'200'}} />
                         <Text style={{ fontSize: 18.0 }}>NADRA Registration Portal</Text>
                     </View>
 
@@ -191,20 +190,10 @@ function RegistrationScreen() {
                         </View>
                     </View>
                     <View style={styles.checkboxInput}>
-                        <Button
-                        
-                            title="Capture Face"
-                            onPress={handleCapture}
-                            style={styles.button}
-                        />
+                        <Text style={styles.captureButton} onPress={handleCapture}>Capture Face</Text>
                         <Text>{data.url}</Text>
                     </View>
-                    <Button
-                        title="Register"
-                        onPress={handleRegistration}
-                        style={styles.button}
-                        color={'#8FACC0'}
-                    />
+                    <Text style={styles.registerButton} onPress={handleRegistration}>Register</Text>
                 </View>
             </KeyboardAwareScrollView>
         </>
@@ -256,9 +245,24 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 10.0
     },
-    button: {
+    captureButton: {
         flex: 1,
         width: '100%',
-        borderRadius: '15'
-    }
+        textAlign: 'center',
+        padding: '10',
+        borderRadius: 15.0,
+        backgroundColor: '#749BC2',
+        elevation: 1.0
+    },
+    registerButton: {
+        flex: 1,
+        width: '100%',
+        textAlign: 'center',
+        padding: '10',
+        borderRadius: 15.0,
+        backgroundColor: '#25316D',
+        color: 'white',
+        fontWeight: 'bold',
+        elevation: 5.0
+    },
 });
