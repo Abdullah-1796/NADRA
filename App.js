@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#a29393',
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginTop: '40'
+		marginTop: '40',
+		padding: '0'
 	},
 });

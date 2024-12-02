@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import { StyleSheet, View, Text, TextInput, Keyboard } from "react-native";
 
 function Input(props) {
     const name = props.name;
@@ -15,6 +15,13 @@ function Input(props) {
                         props.handleChange(name, value);
                     }}
                     style={styles.input}
+                    onTouchEnd={()=>{
+                        if(props.isDate)
+                        {
+                            Keyboard.dismiss();
+                            props.setOpen(true);
+                        }
+                    }}
                 />
             </View>
         </>
@@ -25,17 +32,22 @@ export default Input;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        padding: '20',
-        width: '98%',
+        backgroundColor: '#F0EBE3',
+        borderRadius: 15,
+        padding: '15',
+        paddingVertical: 30,
+        marginBottom: '15',
+        width: '100%',
     },
     label: {
-        
+        fontSize: 10.0
     },
     input: {
         borderColor: 'black',
-        borderWidth: 1,
         borderRadius: 5,
+        backgroundColor: 'white',
+        margin: '3',
+        height: '50',
+        fontSize: 13.0
     }
 });
