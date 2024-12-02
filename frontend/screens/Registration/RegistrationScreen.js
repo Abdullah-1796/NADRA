@@ -2,11 +2,14 @@ import React from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import Input from "./components/Input";
 import DateTimePicker from "@react-native-community/datetimepicker";
-//import CheckBox from "@react-native-community/checkbox";
 import Checkbox from "expo-checkbox";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import captureImage from "../../modules/captureImage";
+import detectFace from "../../modules/detectFace";
+import axios from "axios";
 
 function RegistrationScreen() {
+    const hostedURL = "https://5dba-2400-adc5-12a-4400-5854-2d54-dd4d-b2ad.ngrok-free.app";
     const [data, setData] = React.useState({
         fName: "",
         lName: "",
@@ -15,6 +18,7 @@ function RegistrationScreen() {
         gender: "",
         address: "",
         cnic: "",
+        url: "https://i.imgur.com/aeyellR.jpeg"
     });
 
     const [date, setDate] = React.useState(new Date());
@@ -28,7 +32,7 @@ function RegistrationScreen() {
 
     function handleChange(name, value) {
         setData(prev => {
-            console.log(name + ': ' + value);
+            //console.log(name + ': ' + value);
             return ({
                 ...prev,
                 [name]: value
@@ -44,8 +48,26 @@ function RegistrationScreen() {
         });
     }
 
-    function handleRegistration() {
+    async function handleCapture()
+    {
+        const imageURL = await captureImage();
+        const result = await detectFace(imageURL);
+        if(result !== 'Unable to detectFace')
+        {
+            setImageCaptured(true);
+            handleChange('url', imageURL);
+            console.log(result);
+        }
+    }
 
+    function handleRegistration() {
+        axios.post(''+hostedURL+'/users', data)
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            console.error('Unable to register new user', err);
+        });
     }
 
 
@@ -167,6 +189,15 @@ function RegistrationScreen() {
                                 <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Others</Text>
                             </View>
                         </View>
+                    </View>
+                    <View style={styles.checkboxInput}>
+                        <Button
+                        
+                            title="Capture Face"
+                            onPress={handleCapture}
+                            style={styles.button}
+                        />
+                        <Text>{data.url}</Text>
                     </View>
                     <Button
                         title="Register"

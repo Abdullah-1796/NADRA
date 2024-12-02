@@ -28,7 +28,8 @@ async function detectFace(imageURL) {
         } else {
             console.error("General Error:", error.message);
         }
-        throw error;
+        // throw error;
+        return Promise.reject('Unable to detectFace');
     }
 }
 
