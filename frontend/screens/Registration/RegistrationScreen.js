@@ -24,6 +24,7 @@ function RegistrationScreen() {
         female: false,
         others: false,
     });
+    const [imageCaptured, setImageCaptured] = React.useState(false);
 
     function handleChange(name, value) {
         setData(prev => {
@@ -43,9 +44,8 @@ function RegistrationScreen() {
         });
     }
 
-    function handleRegistration()
-    {
-        
+    function handleRegistration() {
+
     }
 
 
@@ -167,13 +167,13 @@ function RegistrationScreen() {
                                 <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Others</Text>
                             </View>
                         </View>
-                        <Button
-                        
-                            title="Register"
-                            onPress={handleRegistration}
-                        />
-
                     </View>
+                    <Button
+                        title="Register"
+                        onPress={handleRegistration}
+                        style={styles.button}
+                        color={'#8FACC0'}
+                    />
                 </View>
             </KeyboardAwareScrollView>
         </>
@@ -186,7 +186,7 @@ export default RegistrationScreen;
 const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
-        backgroundColor: '#F6F5F2',
+        backgroundColor: 'white',
     },
     container: {
         flex: 1,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
         marginVertical: '5',
     },
     checkboxInput: {
-        backgroundColor: '#F0EBE3',
+        backgroundColor: '#D2E4F1',
         borderRadius: 15,
         padding: '15',
         paddingVertical: 30,
@@ -225,4 +225,9 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 10.0
     },
+    button: {
+        flex: 1,
+        width: '100%',
+        borderRadius: '15'
+    }
 });

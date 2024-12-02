@@ -32,7 +32,7 @@ export default Input;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#F0EBE3',
+        backgroundColor: '#D2E4F1',
         borderRadius: 15,
         padding: '15',
         paddingVertical: 30,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     input: {
         borderColor: 'black',
         borderRadius: 5,
-        backgroundColor: 'white',
+        backgroundColor: 'aliceblue',
         margin: '3',
         height: '50',
         fontSize: 13.0
