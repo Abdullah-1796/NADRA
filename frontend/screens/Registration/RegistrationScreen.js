@@ -9,7 +9,7 @@ import detectFace from "../../modules/detectFace";
 import axios from "axios";
 
 function RegistrationScreen() {
-    const hostedURL = "https://5dba-2400-adc5-12a-4400-5854-2d54-dd4d-b2ad.ngrok-free.app";
+    const hostedURL = "https://6930-154-80-5-243.ngrok-free.app";
     const [data, setData] = React.useState({
         fName: "",
         lName: "",
@@ -32,7 +32,7 @@ function RegistrationScreen() {
 
     function handleChange(name, value) {
         setData(prev => {
-            //console.log(name + ': ' + value);
+            console.log(name + ': ' + value);
             return ({
                 ...prev,
                 [name]: value
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         fontSize: '15.0',
         width: '100%',
-        paddingVertical: '20'
+        paddingVertical: '50'
     },
     form: {
         // backgroundColor: 'blue',

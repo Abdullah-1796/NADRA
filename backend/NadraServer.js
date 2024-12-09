@@ -4,7 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import recognizeFace from "./modules/recognizeFace.js";
 
-const port = 3001;
+const port = 3005;
 const app = express();
 app.use(cors());
 app.use(express.json());

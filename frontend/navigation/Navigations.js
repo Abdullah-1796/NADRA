@@ -9,14 +9,13 @@ const Stack = createNativeStackNavigator();
 
 function Navigations()
 {
-    console.log("Navigation");
     return(
         <>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName='RegistrationScreen'>
-                    {/* <Stack.Screen name='SplashScreen' component={SplashScreen} />
-                    <Stack.Screen name='HomeScreen' component={HomeScreen} /> */}
-                    <Stack.Screen name='RegistrationScreen' component={RegistrationScreen} />
+                <Stack.Navigator initialRouteName='HomeScreen'>
+                    <Stack.Screen name='SplashScreen' component={SplashScreen} options={{headerShown: false}}/>
+                    <Stack.Screen name='HomeScreen' component={HomeScreen} options={{headerShown: false}} />
+                    <Stack.Screen name='RegistrationScreen' component={RegistrationScreen} options={{headerShown: false}} />
                 </Stack.Navigator>
             </NavigationContainer>
         </>
