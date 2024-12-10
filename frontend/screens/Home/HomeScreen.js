@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'brown'
     },
 
     container: {
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
         flex: 2,
         fontWeight: 'bold',
         fontSize: 25.0,
-        fontFamily: 'Poppins_400Regular'
+        fontFamily: 'Poppins_400Regular',
     },
 
     textContainer: {

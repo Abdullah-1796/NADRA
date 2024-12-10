@@ -32,20 +32,23 @@ export default Input;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#D2E4F1',
-        borderRadius: 15,
+        backgroundColor: '#9aa9d1',
+        borderRadius: 30,
         padding: '15',
-        paddingVertical: 30,
-        marginBottom: '15',
+        paddingVertical: 35,
+        marginBottom: '20',
         width: '100%',
     },
     label: {
-        fontSize: 10.0
+        fontSize: 10.0,
+        marginBottom: 5,
+        marginLeft: 10,
+        fontWeight: '500'
     },
     input: {
-        borderColor: 'black',
-        borderRadius: 5,
-        backgroundColor: 'aliceblue',
+        borderRadius: 15,
+        paddingHorizontal: 20,
+        backgroundColor: '#f3f4f5',
         margin: '3',
         height: '50',
         fontSize: 13.0

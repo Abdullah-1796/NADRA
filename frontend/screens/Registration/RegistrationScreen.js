@@ -7,6 +7,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import captureImage from "../../modules/captureImage";
 import detectFace from "../../modules/detectFace";
 import axios from "axios";
+import { ImageBackground } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 
 function RegistrationScreen() {
     const hostedURL = "https://6930-154-80-5-243.ngrok-free.app";
@@ -80,121 +82,133 @@ function RegistrationScreen() {
     return (
         <>
             <KeyboardAwareScrollView
-                extraScrollHeight={20}
+                extraScrollHeight={0}
                 enableOnAndroid={true}
                 contentContainerStyle={styles.scrollContainer}
             >
-                <View style={styles.container}>
-                    <View style={styles.heading}>
-                        <Image source={'Nadra-Logo-background-drop.jpeg'} style={{width:'200'}} />
-                        <Text style={{ fontSize: 18.0 }}>NADRA Registration Portal</Text>
-                    </View>
+                <ImageBackground
+                    source={require('../../assets/B3.jpg')}
+                    style={styles.background}
+                    resizeMode="cover"
+                >
+                    <View style={styles.container}>
+                        <View style={styles.header}>
+                            <Image source={require('../../assets/nadra_logo.png')} style={styles.logo} resizeMode="contain" />
+                            <Text style={styles.headerText}>NADRA e-portal</Text>
+                        </View>
 
-                    <View style={styles.form}>
-                        <Input
-                            label='First Name'
-                            name='fName'
-                            placeholder='First Name'
-                            value={data.fName}
-                            keyboardType='default'
-                            handleChange={handleChange}
-                        />
-                        <Input
-                            label='Last Name'
-                            name='lName'
-                            placeholder='Last Name'
-                            value={data.lName}
-                            keyboardType='default'
-                            handleChange={handleChange}
-                        />
-                        <Input
-                            label='Age'
-                            name='age'
-                            placeholder='Age'
-                            value={data.age}
-                            keyboardType='numeric'
-                            handleChange={handleChange}
-                        />
-                        <Input
-                            label='Address'
-                            name='address'
-                            placeholder='Address'
-                            value={data.address}
-                            keyboardType='default'
-                            handleChange={handleChange}
-                        />
-                        <Input
-                            label='CNIC'
-                            name='cnic'
-                            placeholder='CNIC'
-                            value={data.cnic}
-                            keyboardType='numeric'
-                            handleChange={handleChange}
-                        />
-                        <Input
-                            label='Date of birth'
-                            name='dob'
-                            placeholder='dd/mm/yyyy'
-                            value={data.dob}
-                            keyboardType='default'
-                            handleChange={handleChange}
-                            isDate={true}
-                            setOpen={setOpen}
-                        />
-                        {
-                            open && <DateTimePicker
-                                value={date}
-                                mode="date"
-                                display="default"
-                                maximumDate={maxDate}
-                                onChange={(e, d) => {
-                                    setDate(d);
-                                    //console.log(formatDate(d));
-                                    handleChange('dob', formatDate(d));
-                                    setOpen(false);
-                                }}
+                        <View style={styles.form}>
+                            <View style={styles.heading}>
+                                <Text style={{ fontSize: 18.0, fontWeight: '500' }}>Register new Citizen</Text>
+                            </View>
+                            <Input
+                                label='First Name'
+                                name='fName'
+                                placeholder='First Name'
+                                value={data.fName}
+                                keyboardType='default'
+                                handleChange={handleChange}
                             />
-                        }
-                        <View style={styles.checkboxInput}>
-                            <Text style={styles.label}>Select Gender</Text>
-                            <View style={styles.checkboxContainer}>
-                                <Checkbox
-                                    value={gender.male}
-                                    onValueChange={() => {
-                                        handleGenderChange('male');
-                                        handleChange('gender', 'male');
+                            <Input
+                                label='Last Name'
+                                name='lName'
+                                placeholder='Last Name'
+                                value={data.lName}
+                                keyboardType='default'
+                                handleChange={handleChange}
+                            />
+                            <Input
+                                label='Age'
+                                name='age'
+                                placeholder='Age'
+                                value={data.age}
+                                keyboardType='numeric'
+                                handleChange={handleChange}
+                            />
+                            <Input
+                                label='Address'
+                                name='address'
+                                placeholder='Address'
+                                value={data.address}
+                                keyboardType='default'
+                                handleChange={handleChange}
+                            />
+                            <Input
+                                label='CNIC'
+                                name='cnic'
+                                placeholder='CNIC'
+                                value={data.cnic}
+                                keyboardType='numeric'
+                                handleChange={handleChange}
+                            />
+                            <Input
+                                label='Date of birth'
+                                name='dob'
+                                placeholder='dd/mm/yyyy'
+                                value={data.dob}
+                                keyboardType='default'
+                                handleChange={handleChange}
+                                isDate={true}
+                                setOpen={setOpen}
+                            />
+                            {
+                                open && <DateTimePicker
+                                    value={date}
+                                    mode="date"
+                                    display="default"
+                                    maximumDate={maxDate}
+                                    onChange={(e, d) => {
+                                        setDate(d);
+                                        //console.log(formatDate(d));
+                                        handleChange('dob', formatDate(d));
+                                        setOpen(false);
                                     }}
                                 />
-                                <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Male</Text>
+                            }
+                            <View style={styles.checkboxInput}>
+                                <Text style={styles.label}>Select Gender</Text>
+                                <View style={styles.checkboxContainer}>
+                                    <Checkbox
+                                        value={gender.male}
+                                        onValueChange={() => {
+                                            handleGenderChange('male');
+                                            handleChange('gender', 'male');
+                                        }}
+                                    />
+                                    <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Male</Text>
+                                </View>
+                                <View style={styles.checkboxContainer}>
+                                    <Checkbox
+                                        value={gender.female}
+                                        onValueChange={() => {
+                                            handleGenderChange('female');
+                                            handleChange('gender', 'female');
+                                        }}
+                                    />
+                                    <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Female</Text>
+                                </View>
+                                <View style={styles.checkboxContainer}>
+                                    <Checkbox
+                                        value={gender.others}
+                                        onValueChange={() => {
+                                            handleGenderChange('others');
+                                            handleChange('gender', 'others');
+                                        }}
+                                    />
+                                    <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Others</Text>
+                                </View>
                             </View>
-                            <View style={styles.checkboxContainer}>
-                                <Checkbox
-                                    value={gender.female}
-                                    onValueChange={() => {
-                                        handleGenderChange('female');
-                                        handleChange('gender', 'female');
-                                    }}
-                                />
-                                <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Female</Text>
+                            <View style={styles.checkboxInput}>
+                                <Text style={styles.captureButton} onPress={handleCapture}>Capture Face</Text>
+                                <Text>{data.url}</Text>
                             </View>
-                            <View style={styles.checkboxContainer}>
-                                <Checkbox
-                                    value={gender.others}
-                                    onValueChange={() => {
-                                        handleGenderChange('others');
-                                        handleChange('gender', 'others');
-                                    }}
-                                />
-                                <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Others</Text>
-                            </View>
+                            {/* <Text style={styles.registerButton} onPress={handleRegistration}>Register</Text> */}
+                            <LinearGradient style={styles.registerButton} colors={['#061b52', '#52679d']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} onTouchStart={handleRegistration}>
+                                <Text style={styles.buttonText}>Register</Text>
+                            </LinearGradient>
                         </View>
                     </View>
-                    <View style={styles.checkboxInput}>
-                        <Text style={styles.captureButton} onPress={handleCapture}>Capture Face</Text>
-                        <Text>{data.url}</Text>
-                    </View>
-                    <Text style={styles.registerButton} onPress={handleRegistration}>Register</Text>
-                </View>
+                </ImageBackground>
             </KeyboardAwareScrollView>
         </>
     );
@@ -208,61 +222,102 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: 'white',
     },
+
+    background: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
     container: {
         flex: 1,
         justifyContent: 'center',
-        width: '100%',
-        padding: '15'
+        paddingTop: 70,
+        paddingBottom: 20
     },
+
+    header: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        marginBottom: 10
+    },
+
+    logo: {
+        flex: 1,
+        height: 90
+    },
+
+    headerText: {
+        flex: 2,
+        fontWeight: 'bold',
+        fontSize: 25.0,
+        fontFamily: 'Poppins_400Regular',
+    },
+
     heading: {
         flex: 1,
         justifyContent: 'center',
         fontSize: '15.0',
         width: '100%',
-        paddingVertical: '50'
+        paddingVertical: '25',
+        marginLeft: 10
     },
+
     form: {
         // backgroundColor: 'blue',
         flex: 1,
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: 15
     },
+
     checkboxContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: '100%',
         marginVertical: '5',
+        paddingLeft: 10
     },
+
     checkboxInput: {
-        backgroundColor: '#D2E4F1',
-        borderRadius: 15,
+        backgroundColor: '#9aa9d1',
+        borderRadius: 30,
         padding: '15',
-        paddingVertical: 30,
-        marginBottom: '15',
+        paddingVertical: 35,
+        marginBottom: '20',
         width: '100%',
     },
+
     label: {
-        fontSize: 10.0
+        fontSize: 10.0,
+        marginBottom: 5,
+        marginLeft: 10,
+        fontWeight: '500'
     },
+
     captureButton: {
         flex: 1,
-        width: '100%',
         textAlign: 'center',
         padding: '10',
-        borderRadius: 15.0,
-        backgroundColor: '#749BC2',
+        borderRadius: 30.0,
+        backgroundColor: '#f3f4f5',
         elevation: 1.0
     },
+
     registerButton: {
         flex: 1,
-        width: '100%',
-        textAlign: 'center',
-        padding: '10',
-        borderRadius: 15.0,
+        padding: '20',
+        width: '99%',
+        borderRadius: 30.0,
         backgroundColor: '#25316D',
-        color: 'white',
-        fontWeight: 'bold',
         elevation: 5.0
     },
+
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    }
 });
