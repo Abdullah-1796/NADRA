@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import Input from "./components/Input";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Checkbox from "expo-checkbox";
@@ -9,9 +9,10 @@ import detectFace from "../../modules/detectFace";
 import axios from "axios";
 import { ImageBackground } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
+import LottieView from "lottie-react-native";
 
-function RegistrationScreen() {
-    const hostedURL = "https://6930-154-80-5-243.ngrok-free.app";
+function RegistrationScreen({ navigation }) {
+    const hostedURL = "https://ea23-223-123-7-4.ngrok-free.app";
     const [data, setData] = React.useState({
         fName: "",
         lName: "",
@@ -31,6 +32,10 @@ function RegistrationScreen() {
         others: false,
     });
     const [imageCaptured, setImageCaptured] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const [warning, setWarning] = React.useState(false);
+    const [done, setDone] = React.useState(false);
+    const [captured, setCaptured] = React.useState(false);
 
     function handleChange(name, value) {
         setData(prev => {
@@ -51,23 +56,54 @@ function RegistrationScreen() {
     }
 
     async function handleCapture() {
+        setLoading(true);
         const imageURL = await captureImage();
         const result = await detectFace(imageURL);
         if (result !== 'Unable to detectFace') {
             setImageCaptured(true);
             handleChange('url', imageURL);
+            setLoading(false);
+            setCaptured(true);
+            setTimeout(() => {
+                setCaptured(false);
+            }, 1500);
             console.log(result);
         }
     }
 
+    function showWarning(message) {
+        setWarning(true);
+        setTimeout(() => {
+            setWarning(false);
+            alert(message);
+        }, 2000);
+    }
+
     function handleRegistration() {
-        axios.post('' + hostedURL + '/users', data)
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(err => {
-                console.error('Unable to register new user', err);
-            });
+        if (data.address == "" || data.age == "" || data.cnic == "" || data.dob == "" || data.fName == "" || data.lName == "" || data.gender == "") {
+            showWarning("Any field cannot be empty!");
+        }
+        else if (!imageCaptured) {
+            showWarning("Capture your image!");
+        }
+        else {
+            setLoading(true);
+            axios.post(hostedURL + '/users', data)
+                .then(res => {
+                    console.log(res.data);
+                    setLoading(false);
+                    setDone(true);
+                    setTimeout(() => {
+                        setDone(false);
+                        navigation.navigate('HomeScreen');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Unable to register new user', err);
+                    setLoading(false);
+                    showWarning("Unable to register user!");
+                });
+        }
     }
 
 
@@ -78,146 +114,211 @@ function RegistrationScreen() {
         return new Intl.DateTimeFormat('en-GB').format(date);
     };
 
-    //console.log("Registration");
-    return (
-        <>
-            <KeyboardAwareScrollView
-                extraScrollHeight={0}
-                enableOnAndroid={true}
-                contentContainerStyle={styles.scrollContainer}
-            >
-                <ImageBackground
-                    source={require('../../assets/B3.jpg')}
-                    style={styles.background}
-                    resizeMode="cover"
-                >
-                    <View style={styles.container}>
-                        <View style={styles.header}>
-                            <Image source={require('../../assets/nadra_logo.png')} style={styles.logo} resizeMode="contain" />
-                            <Text style={styles.headerText}>NADRA e-portal</Text>
-                        </View>
+    if (loading) {
+        return (
+            <>
+                {/* <ActivityIndicator size={"large"} color={"#2575fc"} style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                }} /> */}
+                <LottieView
+                    source={require("../../assets/loadingAnimation.json")}
+                    autoPlay
+                    loop
+                    style={styles.lottie}
+                />
+            </>
+        );
+    }
+    else if (warning) {
 
-                        <View style={styles.form}>
-                            <View style={styles.heading}>
-                                <Text style={{ fontSize: 18.0, fontWeight: '500' }}>Register new Citizen</Text>
+        return (
+            <>
+                <LottieView
+                    source={require("../../assets/warningAnimation.json")} // Replace with your Lottie file
+                    autoPlay
+                    loop
+                    style={styles.lottie}
+                />
+            </>
+        );
+    }
+    else if (done) {
+
+        return (
+            <>
+                <LottieView
+                    source={require("../../assets/doneAnimation.json")} // Replace with your Lottie file
+                    autoPlay
+                    loop
+                    style={styles.lottie}
+                />
+            </>
+        );
+    }
+    else if (captured) {
+
+        return (
+            <>
+                <LottieView
+                    source={require("../../assets/capturedAnimation.json")} // Replace with your Lottie file
+                    autoPlay
+                    loop
+                    style={styles.lottie}
+                />
+            </>
+        );
+    }
+    else {
+        return (
+            <>
+                <KeyboardAwareScrollView
+                    extraScrollHeight={0}
+                    enableOnAndroid={true}
+                    contentContainerStyle={styles.scrollContainer}
+                >
+                    <ImageBackground
+                        source={require('../../assets/B3.jpg')}
+                        style={styles.background}
+                        resizeMode="cover"
+                    >
+                        <View style={styles.container}>
+                            <View style={styles.header}>
+                                <Image source={require('../../assets/nadra_logo.png')} style={styles.logo} resizeMode="contain" />
+                                <Text style={styles.headerText}>NADRA e-portal</Text>
                             </View>
-                            <Input
-                                label='First Name'
-                                name='fName'
-                                placeholder='First Name'
-                                value={data.fName}
-                                keyboardType='default'
-                                handleChange={handleChange}
-                            />
-                            <Input
-                                label='Last Name'
-                                name='lName'
-                                placeholder='Last Name'
-                                value={data.lName}
-                                keyboardType='default'
-                                handleChange={handleChange}
-                            />
-                            <Input
-                                label='Age'
-                                name='age'
-                                placeholder='Age'
-                                value={data.age}
-                                keyboardType='numeric'
-                                handleChange={handleChange}
-                            />
-                            <Input
-                                label='Address'
-                                name='address'
-                                placeholder='Address'
-                                value={data.address}
-                                keyboardType='default'
-                                handleChange={handleChange}
-                            />
-                            <Input
-                                label='CNIC'
-                                name='cnic'
-                                placeholder='CNIC'
-                                value={data.cnic}
-                                keyboardType='numeric'
-                                handleChange={handleChange}
-                            />
-                            <Input
-                                label='Date of birth'
-                                name='dob'
-                                placeholder='dd/mm/yyyy'
-                                value={data.dob}
-                                keyboardType='default'
-                                handleChange={handleChange}
-                                isDate={true}
-                                setOpen={setOpen}
-                            />
-                            {
-                                open && <DateTimePicker
-                                    value={date}
-                                    mode="date"
-                                    display="default"
-                                    maximumDate={maxDate}
-                                    onChange={(e, d) => {
-                                        setDate(d);
-                                        //console.log(formatDate(d));
-                                        handleChange('dob', formatDate(d));
-                                        setOpen(false);
-                                    }}
+
+                            <View style={styles.form}>
+                                <View style={styles.heading}>
+                                    <Text style={{ fontSize: 18.0, fontWeight: '500' }}>Register new Citizen</Text>
+                                </View>
+                                <Input
+                                    label='First Name'
+                                    name='fName'
+                                    placeholder='First Name'
+                                    value={data.fName}
+                                    keyboardType='default'
+                                    handleChange={handleChange}
                                 />
-                            }
-                            <View style={styles.checkboxInput}>
-                                <Text style={styles.label}>Select Gender</Text>
-                                <View style={styles.checkboxContainer}>
-                                    <Checkbox
-                                        value={gender.male}
-                                        onValueChange={() => {
-                                            handleGenderChange('male');
-                                            handleChange('gender', 'male');
+                                <Input
+                                    label='Last Name'
+                                    name='lName'
+                                    placeholder='Last Name'
+                                    value={data.lName}
+                                    keyboardType='default'
+                                    handleChange={handleChange}
+                                />
+                                <Input
+                                    label='Age'
+                                    name='age'
+                                    placeholder='Age'
+                                    value={data.age}
+                                    keyboardType='numeric'
+                                    handleChange={handleChange}
+                                />
+                                <Input
+                                    label='Address'
+                                    name='address'
+                                    placeholder='Address'
+                                    value={data.address}
+                                    keyboardType='default'
+                                    handleChange={handleChange}
+                                />
+                                <Input
+                                    label='CNIC'
+                                    name='cnic'
+                                    placeholder='CNIC'
+                                    value={data.cnic}
+                                    keyboardType='numeric'
+                                    handleChange={handleChange}
+                                />
+                                <Input
+                                    label='Date of birth'
+                                    name='dob'
+                                    placeholder='dd/mm/yyyy'
+                                    value={data.dob}
+                                    keyboardType='default'
+                                    handleChange={handleChange}
+                                    isDate={true}
+                                    setOpen={setOpen}
+                                />
+                                {
+                                    open && <DateTimePicker
+                                        value={date}
+                                        mode="date"
+                                        display="default"
+                                        maximumDate={maxDate}
+                                        onChange={(e, d) => {
+                                            setDate(d);
+                                            //console.log(formatDate(d));
+                                            handleChange('dob', formatDate(d));
+                                            setOpen(false);
                                         }}
                                     />
-                                    <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Male</Text>
+                                }
+                                <View style={styles.checkboxInput}>
+                                    <Text style={styles.label}>Select Gender</Text>
+                                    <View style={styles.checkboxContainer}>
+                                        <Checkbox
+                                            value={gender.male}
+                                            onValueChange={() => {
+                                                handleGenderChange('male');
+                                                handleChange('gender', 'male');
+                                            }}
+                                        />
+                                        <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Male</Text>
+                                    </View>
+                                    <View style={styles.checkboxContainer}>
+                                        <Checkbox
+                                            value={gender.female}
+                                            onValueChange={() => {
+                                                handleGenderChange('female');
+                                                handleChange('gender', 'female');
+                                            }}
+                                        />
+                                        <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Female</Text>
+                                    </View>
+                                    <View style={styles.checkboxContainer}>
+                                        <Checkbox
+                                            value={gender.others}
+                                            onValueChange={() => {
+                                                handleGenderChange('others');
+                                                handleChange('gender', 'others');
+                                            }}
+                                        />
+                                        <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Others</Text>
+                                    </View>
                                 </View>
-                                <View style={styles.checkboxContainer}>
-                                    <Checkbox
-                                        value={gender.female}
-                                        onValueChange={() => {
-                                            handleGenderChange('female');
-                                            handleChange('gender', 'female');
-                                        }}
-                                    />
-                                    <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Female</Text>
+                                <View style={styles.checkboxInput}>
+                                    <Text style={styles.captureButton} onPress={handleCapture}>Capture Face</Text>
+                                    <Text>{data.url}</Text>
                                 </View>
-                                <View style={styles.checkboxContainer}>
-                                    <Checkbox
-                                        value={gender.others}
-                                        onValueChange={() => {
-                                            handleGenderChange('others');
-                                            handleChange('gender', 'others');
-                                        }}
-                                    />
-                                    <Text style={{ marginLeft: 10, fontSize: 13.0 }}>Others</Text>
-                                </View>
+                                {/* <Text style={styles.registerButton} onPress={handleRegistration}>Register</Text> */}
+                                <LinearGradient style={styles.registerButton} colors={['#061b52', '#52679d']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} onTouchStart={handleRegistration}>
+                                    <Text style={styles.buttonText}>Register</Text>
+                                </LinearGradient>
                             </View>
-                            <View style={styles.checkboxInput}>
-                                <Text style={styles.captureButton} onPress={handleCapture}>Capture Face</Text>
-                                <Text>{data.url}</Text>
-                            </View>
-                            {/* <Text style={styles.registerButton} onPress={handleRegistration}>Register</Text> */}
-                            <LinearGradient style={styles.registerButton} colors={['#061b52', '#52679d']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} onTouchStart={handleRegistration}>
-                                <Text style={styles.buttonText}>Register</Text>
-                            </LinearGradient>
                         </View>
-                    </View>
-                </ImageBackground>
-            </KeyboardAwareScrollView>
-        </>
-    );
+                    </ImageBackground>
+                </KeyboardAwareScrollView>
+            </>
+        );
+    }
 }
 
 export default RegistrationScreen;
 
 
 const styles = StyleSheet.create({
+    lottie: {
+        width: 200,
+        height: 200,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
+    },
+
     scrollContainer: {
         flexGrow: 1,
         backgroundColor: 'white',
