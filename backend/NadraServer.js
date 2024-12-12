@@ -62,6 +62,9 @@ app.post("/faceRecognition", async (req, res) => {
     let cnic = req.body.cnic;
     let image_url2 = req.body.image_url;
 
+    console.log(cnic);
+    console.log(image_url2);
+
     const str1 = "select * from users where cnic = $1";
     const values = [cnic];
     console.log("faceRecognition API called");
@@ -74,15 +77,17 @@ app.post("/faceRecognition", async (req, res) => {
             console.log("Image URL 1: " + image_url1);
             console.log("Image URL 2: " + image_url2);
             const result = await recognizeFace(image_url1, image_url2);
-            //console.log(result);
-            res.json({matchResult: result});
+            console.log(result.match);
+            //res.json({matchResult: result});
+            res.json({result: result.match});
         }
         else {
-            res.status(404).json({message: "User not registered"});
+            res.status(401).json({message: "User not registered"});
         }
     }
     catch (err) {
         console.log(err);
+        res.json(err);
     }
 });
 

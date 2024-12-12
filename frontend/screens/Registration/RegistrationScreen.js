@@ -12,7 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from "lottie-react-native";
 
 function RegistrationScreen({ navigation }) {
-    const hostedURL = "https://ea23-223-123-7-4.ngrok-free.app";
+    const hostedURL = "https://1723-2400-adc5-12a-4400-d5a8-8f9e-754a-e90.ngrok-free.app";
     const [data, setData] = React.useState({
         fName: "",
         lName: "",
